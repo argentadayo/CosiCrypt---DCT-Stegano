@@ -1,0 +1,165 @@
+/* Responsive Styles for Stego DCT Website */
+
+/* Base Styles (unchanged) */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f9f9f9;
+  color: #333;
+}
+.container {
+  width: 90%;               /* Fluid width */
+  max-width: 1000px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Navigation Tabs as Flex */
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.tab {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.tab.active {
+  border-color: #3366cc;
+  color: #3366cc;
+}
+
+/* Sections */
+.page {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.page.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.field {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+label {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+input[type="file"],
+textarea {
+  width: 100%;             /* Full width inputs */
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.preview {
+  display: none;
+  margin: 0.5rem auto 0;
+  max-width: 100%;          /* Responsive image */
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background: #3366cc;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.btn:hover {
+  background: #254a99;
+}
+
+.flash {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  color: #c00;
+}
+.flash li {
+  margin-bottom: 0.5rem;
+}
+
+.result {
+  margin-top: 1.5rem;
+  background: #e6f2ff;
+  padding: 1rem;
+  border-radius: 4px;
+}
+.result h3 {
+  margin-top: 0;
+}
+pre {
+  white-space: pre-wrap;
+  margin: 0;
+  text-align: justify;
+  font-size: 1rem;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.75rem;
+  }
+  .tab {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .btn {
+    padding: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+  header h1 {
+    font-size: 1.5rem;
+  }
+  nav {
+    flex-direction: column;
+  }
+  .tab {
+    width: 100%;
+    text-align: center;
+    margin: 0.25rem 0;
+  }
+  textarea {
+    font-size: 0.9rem;
+  }
+}

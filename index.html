@@ -1,0 +1,116 @@
+<!-- File: templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CosiCrypt - DCT Steganografi</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Steganografi DCT</h1>
+      <nav>
+        <button data-target="encode" class="tab active">Encode</button>
+        <button data-target="decode" class="tab">Decode</button>
+      </nav>
+    </header>
+
+    <section id="encode" class="page active">
+      <h2>Sisipkan Pesan</h2>
+      <form id="encode-form" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="encode" value="1">
+        <div class="field">
+          <label for="image-enc">Pilih Gambar</label>
+          <input type="file" id="image-enc" name="image" accept="image/*" required>
+          <img id="preview-enc" class="preview" src="#" alt="Pratinjau Gambar" />
+        </div>
+        <div class="field">
+          <label for="message">Pesan</label>
+          <textarea id="message" name="message" rows="4" placeholder="Ketik pesan..." required></textarea>
+        </div>
+        <button type="submit" class="btn">Encode & Download</button>
+      </form>
+    </section>
+
+    <section id="decode" class="page">
+      <h2>Decode Pesan</h2>
+      <form id="decode-form" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="decode" value="1">
+        <div class="field">
+          <label for="image-dec">Pilih Gambar</label>
+          <input type="file" id="image-dec" name="image" accept="image/*" required>
+          <img id="preview-dec" class="preview" src="#" alt="Pratinjau Gambar" />
+        </div>
+        <button type="submit" class="btn">Decode</button>
+      </form>
+      <div class="result" id="result-container" {% if hidden is none %}style="display:none"{% endif %}>
+        <h3>Pesan Tersembunyi:</h3>
+        <pre id="decoded-text">{{ hidden or '' }}</pre>
+      </div>
+    </section>
+
+    <ul class="flash" id="flash-container">
+      {% for msg in get_flashed_messages() %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <script>
+    // Tab switching logic with flash clearing on decode
+    const tabs = document.querySelectorAll('.tab');
+    const pages = document.querySelectorAll('.page');
+    const flashContainer = document.getElementById('flash-container');
+
+    tabs.forEach(btn => btn.addEventListener('click', () => {
+      // switch tab UI
+      tabs.forEach(b => b.classList.remove('active'));
+      pages.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+      // clear flash when navigating to decode
+      if (btn.dataset.target === 'decode') {
+        flashContainer.innerHTML = '';
+      }
+    }));
+
+    // Image preview helper
+    function setupPreview(inputId, previewId) {
+      const inp = document.getElementById(inputId);
+      const prev = document.getElementById(previewId);
+      inp.addEventListener('change', () => {
+        const file = inp.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = e => { prev.src = e.target.result; prev.style.display = 'block'; };
+          reader.readAsDataURL(file);
+        } else {
+          prev.src = '#'; prev.style.display = 'none';
+        }
+      });
+    }
+    setupPreview('image-enc', 'preview-enc');
+    setupPreview('image-dec', 'preview-dec');
+
+    // AJAX decode to avoid page reload
+    const decodeForm = document.getElementById('decode-form');
+    decodeForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = new FormData(decodeForm);
+      fetch(decodeForm.action, { method: 'POST', body: data })
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const pre = doc.querySelector('#result-container pre');
+          const txt = pre ? pre.textContent : 'Gagal decode.';
+          document.getElementById('decoded-text').textContent = txt;
+          document.getElementById('result-container').style.display = 'block';
+        })
+        .catch(() => console.error('Error saat decode'));
+    });
+  </script>
+</body>
+</html>
